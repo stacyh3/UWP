@@ -70,7 +70,7 @@ Let's add a simple text block to the application.
 #### Windows Phone
 Next let's try running this application on a Windows Phone. We'll just use the phone emulator for this test.  
 **Note**: This step requires that you installed the emulators. This can be done when you installed Visual Studio or you can download and install them here: [Windows SDK and emulator archive](https://developer.microsoft.com/en-us/windows/downloads/sdk-archive)  
-This step will take a while the first time you run the emulator. 
+This step will take a while the first time you run the emulator.  
 1. In the dropdown next to ***Local Machine*** in the debug toolbar select a mobile emulator such as the 5" 720p 1G device
 ![Mobile Emulator Selection](images/06-Mobile-Emulator-Selection.png)
 2. Click the run button in the debug toolbar. You should see something like this:
@@ -78,7 +78,7 @@ This step will take a while the first time you run the emulator.
 3. When you stop the application, use the red stop button in the debug toolbar. That way, the emulator will stay running if you need to keep using it.  
 ![Stop Button](images/08-Stop-Button.png)
 #### Raspberry Pi
-**Note**: For instructions on getting started with Windows 10 IoT Core on Raspberry Pi, visit [http://www.windowsondevices.com](http://www.windowsondevices.com).
+**Note**: For instructions on getting started with Windows 10 IoT Core on Raspberry Pi, visit [http://www.windowsondevices.com/](http://www.windowsondevices.com/).
 1. Double click on **Properties** in the solution explorer.
 ![Project Properties](images/09-Project-Properties.png)
 2. Click the **Debug** tab. Select **ARM** from the platform dropdown, then select **Remote Machine** from the **Target device** dropdown.
