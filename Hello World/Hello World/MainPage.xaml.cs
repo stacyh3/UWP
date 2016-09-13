@@ -22,9 +22,20 @@ namespace Hello_World
     /// </summary>
     public sealed partial class MainPage : Page
     {
+        BlinkyService blinky = new BlinkyService(pinNumber:24);
+
         public MainPage()
         {
             this.InitializeComponent();
+        }
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            if (blinky.CanBlink)
+            {
+                blinky.BlinkRate = 500;
+                blinky.Start();
+            }
         }
     }
 }

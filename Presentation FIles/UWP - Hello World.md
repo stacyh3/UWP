@@ -90,3 +90,146 @@ This step will take a while the first time you run the emulator.
 5. Click **Remote Machine** in the debug toolbar. It will take a couple of minutes to deploy the application package to the Raspberry Pi and start the remote debugger. The first time you run the debugger will be slower due to the need to install framework packages, etc.
 ![Hello World on Raspberry Pi!](images/13-Raspberry-Pi-Hello-World.png)
 6. Click the **red** box in the debug toolbar to stop debugging.
+
+### Adaptive Code
+The following code will require a Raspberry Pi running Windows 10 IoT Core and an LED connected to GPIO pin 24.
+**Note:** Make sure you use a proper resistor for you LED.
+
+1. Now let's add a code file to the solution. Choose ***Add | Class***
+![](images/14-Add-New-Class.png)
+2. Name the class ***BlinkyService***
+3. Replace the generated code with the following:
+```C#
+using System;
+using Windows.Devices.Gpio;
+using Windows.Foundation.Metadata;
+using Windows.UI.Xaml;
+
+namespace Hello_World
+{
+    /// <summary>
+    /// This is a very simple service for blinking an LED.
+    /// </summary>
+    public class BlinkyService
+    {
+        private readonly string gpioType = "Windows.Devices.Gpio.GpioController";
+        private readonly int pinNumber;
+        private DispatcherTimer timer;
+        private GpioPinValue pinValue;
+        private GpioPin pin;
+
+        int blinkRate;
+        public int BlinkRate
+        {
+            get
+            {
+                return blinkRate;
+            }
+            set
+            {
+                blinkRate = value;
+                if (timer != null)
+                    timer.Interval = TimeSpan.FromMilliseconds(blinkRate);
+            }
+        }
+
+        public BlinkyService(int pinNumber)
+        {
+            this.pinNumber = pinNumber;
+        }
+
+        /// <summary>
+        /// Is blinking a light possible on this device?
+        /// </summary>
+        public bool CanBlink
+        {
+            get
+            {
+                //NOTE: This is where we use the adaptable code feature of UWP.
+                return ApiInformation.IsTypePresent(gpioType);
+            }
+        }
+
+        // This is a "fire and forget" timer.
+        public void Start()
+        {
+            if (!InitializeGpio())
+                return;
+
+            timer = new DispatcherTimer();
+            timer.Interval = TimeSpan.FromMilliseconds(BlinkRate);
+            timer.Tick += TimerTick;
+
+            if (pin != null)
+            {
+                timer.Start();
+            }
+        }
+
+        private void TimerTick(object sender, object e)
+        {
+            if (pinValue == GpioPinValue.High)
+                pinValue = GpioPinValue.Low;
+            else
+                pinValue = GpioPinValue.High;
+
+            pin.Write(pinValue);
+        }
+
+
+        private bool InitializeGpio()
+        {
+            var gpio = GpioController.GetDefault();
+
+            // No GPIO controller found
+            if (gpio == null)
+            {
+                pin = null;                
+                return false;
+            }
+
+            pin = gpio.OpenPin(pinNumber);
+            pinValue = GpioPinValue.High;
+            pin.Write(pinValue);
+            pin.SetDriveMode(GpioPinDriveMode.Output);
+
+            return true;
+        }
+    }
+}
+```
+4. Now modify ***MainPage.xaml*** with the following code:
+```xaml
+<Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+        <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
+            <TextBlock Text="Hello World!" FontSize="48"/>
+            <Button Content="Start LED" FontSize="48" HorizontalAlignment="Center" Click="Button_Click" />
+        </StackPanel>
+    </Grid>
+```
+
+5. Finally add this code to ***MainPage.xaml.cs***
+```
+public sealed partial class MainPage : Page
+{
+    BlinkyService blinky = new BlinkyService(pinNumber:24);
+
+    public MainPage()
+    {
+        this.InitializeComponent();
+    }
+
+    private void Button_Click(object sender, RoutedEventArgs e)
+    {
+        if (blinky.CanBlink)
+        {
+            blinky.BlinkRate = 500;
+            blinky.Start();
+        }
+    }
+}
+```
+6. Examine the code for BlinkyService. In particular note the CanBlink method. This method uses ApiInformation to determine if the given API is supported on the device on which the code is running. This is an example of Adaptive Code in action.
+
+7. In addition to individual APIs, we can also test for API Contracts which are versioned groups of APIs.
+ 
