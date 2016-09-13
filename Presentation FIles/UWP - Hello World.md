@@ -232,4 +232,5 @@ public sealed partial class MainPage : Page
 6. Examine the code for BlinkyService. In particular note the CanBlink method. This method uses ApiInformation to determine if the given API is supported on the device on which the code is running. This is an example of Adaptive Code in action.
 
 7. In addition to individual APIs, we can also test for API Contracts which are versioned groups of APIs.
- 
+
+8. Run the code and click the button to see what happens. If all is wired correctly, you should get a blinking LED!
