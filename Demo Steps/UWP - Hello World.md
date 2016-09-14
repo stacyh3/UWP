@@ -93,7 +93,10 @@ This step will take a while the first time you run the emulator.
 
 ### Adaptive Code
 The following code will require a Raspberry Pi running Windows 10 IoT Core and an LED connected to GPIO pin 24.
-**Note:** Make sure you use a proper resistor for you LED.
+**Note:** Make sure you use a proper resistor for you LED. For the Raspberry Pi, this would be 220 Ohms.
+- Connect the shorter leg of the LED to GPIO 24 (pin 18 on the expansion header) on the RPi2 or RPi3. 
+- Connect the longer leg of the LED to the resistor. 
+- Connect the other end of the resistor to one of the 3.3V pins on the RPi2 or RPi3. 
 
 1. Now let's add a code file to the solution. Choose ***Add | Class***
 ![](images/14-Add-New-Class.png)
